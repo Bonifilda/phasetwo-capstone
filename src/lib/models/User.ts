@@ -47,6 +47,7 @@ const UserSchema = new Schema<UserDocument>(
     bio: {
       type: String,
       default: '',
+      maxlength: 500,
     },
     avatar: {
       type: String,
