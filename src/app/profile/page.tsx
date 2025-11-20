@@ -25,7 +25,7 @@ export default function ProfilePage() {
     setMessage('')
 
     try {
-      const response = await fetch(`/api/users/${session.user.id}`, {
+      const response = await fetch('/api/users/me', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, bio })
@@ -35,9 +35,12 @@ export default function ProfilePage() {
         setMessage('Profile updated successfully!')
         await update()
       } else {
-        setMessage('Failed to update profile')
+        const errorData = await response.json()
+        console.error('Profile update error:', errorData)
+        setMessage(`Failed to update profile: ${errorData.error || 'Unknown error'}`)
       }
     } catch (error) {
+      console.error('Profile update error:', error)
       setMessage('Error updating profile')
     } finally {
       setIsLoading(false)

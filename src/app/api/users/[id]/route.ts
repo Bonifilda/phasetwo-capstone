@@ -17,6 +17,26 @@ const updateUserSchema = z.object({
   }).optional(),
 })
 
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    await connectToDatabase()
+    
+    const user = await UserModel.findById(params.id).select('-password')
+    
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+
+    return NextResponse.json({ user })
+  } catch (error) {
+    console.error('[USER_GET_ERROR]', error)
+    return NextResponse.json({ error: 'Failed to get user' }, { status: 500 })
+  }
+}
+
 export async function PUT(
   request: Request,
   { params }: { params: { id: string } }

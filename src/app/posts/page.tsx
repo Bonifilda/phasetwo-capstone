@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePosts } from '@/hooks/usePosts'
+import { FollowButton } from '@/components/shared/FollowButton'
 
 export default function PostsPage() {
   const { data, isLoading, isError } = usePosts({ page: 1, limit: 20, published: true })
@@ -48,13 +49,26 @@ export default function PostsPage() {
                     {post.excerpt && (
                       <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
                     )}
-                    <div className="flex items-center justify-between text-sm text-gray-500">
+                    <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
                       <span>{post.author?.name || 'Unknown author'}</span>
                       {post.readTime && <span>{post.readTime} min read</span>}
                     </div>
-                    <div className="mt-4">
+                    {post.author?.id && (
+                      <div className="mb-3">
+                        <FollowButton userId={post.author.id} className="text-xs px-3 py-1" />
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between mt-4">
+                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                        <span className="flex items-center gap-1">
+                          👏 {post.likesCount || 0}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          💬 {post.commentsCount || 0}
+                        </span>
+                      </div>
                       <Link
-                        href={`/posts/${post.id || '#'}`}
+                        href={`/posts/${post.slug || post.id || '#'}`}
                         className="text-green-600 hover:text-green-700 font-medium text-sm"
                       >
                         Read more →

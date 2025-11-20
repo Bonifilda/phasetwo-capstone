@@ -7,6 +7,7 @@ import { useComments, useCreateComment } from '@/hooks/useComments'
 import { useLikes } from '@/hooks/useLikes'
 import { useSession } from 'next-auth/react'
 import { useState } from 'react'
+import { FollowButton } from '@/components/shared/FollowButton'
 
 interface PostPageProps {
   params: {
@@ -71,10 +72,20 @@ export default function PostPage({ params }: PostPageProps) {
                   <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl mb-4">
                     {post.title}
                   </h1>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div>
+                        <div className="font-medium text-gray-900">{post.author?.name ?? 'Unknown author'}</div>
+                        <div className="text-sm text-gray-600">
+                          {new Date(post.createdAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                    {post.author?.id && (
+                      <FollowButton userId={post.author.id} />
+                    )}
+                  </div>
                   <div className="flex flex-wrap items-center gap-3 text-gray-600 text-sm">
-                    <span>{post.author?.name ?? 'Unknown author'}</span>
-                    <span>•</span>
-                    <span>{new Date(post.createdAt).toLocaleDateString()}</span>
                     {post.readTime && (
                       <>
                         <span>•</span>
