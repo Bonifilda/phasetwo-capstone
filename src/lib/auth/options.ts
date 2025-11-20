@@ -66,13 +66,9 @@ export const authOptions: NextAuthOptions = {
       return token
     },
     async session({ session, token }) {
-      if (token?.sub && session.user) {
-        session.user.id = token.sub
-        session.user.username = (token.username as string | undefined) ?? null
-      }
-      // Expose Mongo user id on session.user.id
       if (session.user && token.userId) {
-        ;(session.user as any).id = token.userId as string
+        session.user.id = token.userId as string
+        session.user.username = (token.username as string | undefined) ?? null
       }
       return session
     },
