@@ -31,6 +31,7 @@ export default function SignInForm() {
         redirect: false,
         email: email.trim(),
         password,
+        callbackUrl: '/dashboard'
       })
       
       if (result?.error) {
@@ -38,10 +39,10 @@ export default function SignInForm() {
         return
       }
       
-      // Redirect on successful sign in
+      // If we got here, sign in was successful
       router.push('/dashboard')
       router.refresh()
-    } catch (error: any) {
+    } catch (error) {
       console.error('Sign in error:', error)
       setError('An unexpected error occurred. Please try again.')
     } finally {
@@ -121,11 +122,20 @@ export default function SignInForm() {
           </div>
 
           <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <input
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+                className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+              />
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                Remember me
+              </label>
+            </div>
+
             <div className="text-sm">
-              <Link 
-                href="/forgot-password" 
-                className="font-medium text-green-600 hover:text-green-500"
-              >
+              <Link href="/forgot-password" className="font-medium text-green-600 hover:text-green-500">
                 Forgot your password?
               </Link>
             </div>
