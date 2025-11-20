@@ -24,8 +24,6 @@ export async function GET(request: Request) {
   const published =
     publishedParam === null ? undefined : publishedParam === 'true' ? true : false
 
-  console.log('GET /posts params:', { publishedParam, published, authorId, tag, search })
-
   const result = await listPosts(
     {
       authorId,
@@ -36,8 +34,6 @@ export async function GET(request: Request) {
     page,
     limit
   )
-
-  console.log('Posts result:', { count: result.data.length, total: result.pagination.total })
 
   return NextResponse.json(result)
 }

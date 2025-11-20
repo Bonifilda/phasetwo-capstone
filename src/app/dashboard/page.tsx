@@ -17,11 +17,7 @@ export default function DashboardPage() {
     return <p className="p-10">Loading...</p>
   }
 
-  // Normalize posts shape to ALWAYS be an array
-  const posts = Array.isArray(postsData)
-    ? postsData
-    : postsData?.posts || []
-
+  const posts = postsData?.data || []
   const published = posts.filter(p => p.published).length
   const drafts = posts.filter(p => !p.published).length
 

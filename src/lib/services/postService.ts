@@ -145,8 +145,6 @@ export async function createPost(input: PostInput, authorId: string) {
     readingTime: calculateReadingTime(input.content),
   }
 
-  console.log('Creating post with data:', { ...postData, content: '[truncated]' })
-
   const post = await PostModel.create(postData)
 
   return post.populate('author', 'name username avatar')

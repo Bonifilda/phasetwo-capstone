@@ -54,7 +54,6 @@ const PostSchema = new Schema<PostDocument>(
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
-      index: true,
     },
     readingTime: {
       type: Number,
