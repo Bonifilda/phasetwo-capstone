@@ -94,6 +94,11 @@ export async function listPosts(filters: PostFilters, page = 1, limit = 10) {
 
 export async function getPost(identifier: string) {
   await connectToDatabase()
+  
+  if (!identifier) {
+    return null
+  }
+  
   const query = identifier.match(/^[0-9a-fA-F]{24}$/)
     ? { _id: identifier }
     : { slug: identifier.toLowerCase() }

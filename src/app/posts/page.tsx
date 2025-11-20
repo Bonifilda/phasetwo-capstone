@@ -3,9 +3,12 @@
 import Link from 'next/link'
 import { usePosts } from '@/hooks/usePosts'
 import { FollowButton } from '@/components/shared/FollowButton'
+import { PostInteractions } from '@/components/shared/PostInteractions'
+import { useSession } from 'next-auth/react'
 
 export default function PostsPage() {
   const { data, isLoading, isError } = usePosts({ page: 1, limit: 20, published: true })
+  const { data: session } = useSession()
 
   const posts = data?.data ?? []
 
@@ -59,14 +62,7 @@ export default function PostsPage() {
                       </div>
                     )}
                     <div className="flex items-center justify-between mt-4">
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
-                        <span className="flex items-center gap-1">
-                          👏 {post.likesCount || 0}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          💬 {post.commentsCount || 0}
-                        </span>
-                      </div>
+                      <PostInteractions post={post} />
                       <Link
                         href={`/posts/${post.slug || post.id || '#'}`}
                         className="text-green-600 hover:text-green-700 font-medium text-sm"

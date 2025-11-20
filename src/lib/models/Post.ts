@@ -41,7 +41,6 @@ const PostSchema = new Schema<PostDocument>(
     published: {
       type: Boolean,
       default: false,
-      index: true,
     },
     tags: [
       {
