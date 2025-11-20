@@ -1,7 +1,30 @@
+
+'use client'
+
 import ProtectedRoute from '@/components/auth/protectedRoute'
 import Link from 'next/link'
+import { usePosts } from '@/hooks/usePosts'
+import { useSession } from 'next-auth/react'
 
 export default function DashboardPage() {
+  const { data: session } = useSession()
+
+  const { data: postsData, isLoading } = usePosts({
+    authorId: session?.user?.id
+  })
+
+  if (isLoading) {
+    return <p className="p-10">Loading...</p>
+  }
+
+  // Normalize posts shape to ALWAYS be an array
+  const posts = Array.isArray(postsData)
+    ? postsData
+    : postsData?.posts || []
+
+  const published = posts.filter(p => p.published).length
+  const drafts = posts.filter(p => !p.published).length
+
   return (
     <ProtectedRoute>
       <div className="py-8">
@@ -14,13 +37,13 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-lg border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900">Your Stories</h3>
-              <p className="mt-2 text-3xl font-bold text-green-600">0</p>
+              <p className="mt-2 text-3xl font-bold text-green-600">{published}</p>
               <p className="text-gray-600">Published stories</p>
             </div>
 
             <div className="bg-white p-6 rounded-lg border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900">Drafts</h3>
-              <p className="mt-2 text-3xl font-bold text-yellow-600">0</p>
+              <p className="mt-2 text-3xl font-bold text-yellow-600">{drafts}</p>
               <p className="text-gray-600">Unpublished stories</p>
             </div>
 

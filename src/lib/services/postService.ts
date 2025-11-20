@@ -15,6 +15,7 @@ export interface PostFilters {
 export interface PostInput {
   title: string
   content: string
+  excerpt?: string
   tags?: string[]
   coverImage?: string
   published?: boolean
@@ -61,7 +62,10 @@ export async function listPosts(filters: PostFilters, page = 1, limit = 10) {
   }
 
   if (filters.search) {
-    query.$text = { $search: filters.search }
+    query.$or = [
+      { title: { $regex: filters.search, $options: 'i' } },
+      { content: { $regex: filters.search, $options: 'i' } }
+    ]
   }
 
   const skip = (page - 1) * limit
@@ -97,27 +101,53 @@ export async function getPost(identifier: string) {
   return PostModel.findOne(query).populate('author', 'name username avatar bio').lean()
 }
 
+// Helper function to clean and validate tags
+function cleanTags(tags: string[] = []): string[] {
+  return tags
+    .map(tag => 
+      tag
+        .toString()
+        .toLowerCase()
+        .trim()
+        // Remove special characters and limit length
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .slice(0, 30) // Limit tag length to 30 characters
+    )
+    .filter(Boolean) // Remove empty strings
+    .filter((tag, index, self) => self.indexOf(tag) === index) // Remove duplicates
+}
+
 export async function createPost(input: PostInput, authorId: string) {
   await connectToDatabase()
 
   const slugBase = generateSlug(input.title)
   let slug = slugBase
   let counter = 1
+  
   while (await PostModel.exists({ slug })) {
     slug = `${slugBase}-${counter}`
     counter += 1
   }
 
-  const tags = await ensureTagsExist(input.tags)
+  // Simplified tag handling - just use the tags as strings
+  const tags = input.tags ? cleanTags(input.tags) : []
 
-  const post = await PostModel.create({
-    ...input,
+  const postData = {
+    title: input.title,
+    content: input.content,
     slug,
     author: authorId,
     tags,
+    published: Boolean(input.published),
+    coverImage: input.coverImage,
     excerpt: input.excerpt ?? createExcerpt(input.content),
     readingTime: calculateReadingTime(input.content),
-  })
+  }
+
+  console.log('Creating post with data:', { ...postData, content: '[truncated]' })
+
+  const post = await PostModel.create(postData)
 
   return post.populate('author', 'name username avatar')
 }
@@ -181,10 +211,8 @@ export async function getFeed(
 
   const sort =
     type === 'recommended'
-      ? { likesCount: -1, commentsCount: -1 }
-      : type === 'latest'
-        ? { createdAt: -1 }
-        : { createdAt: -1 }
+      ? { likesCount: -1 as const, commentsCount: -1 as const }
+      : { createdAt: -1 as const }
 
   const skip = (page - 1) * limit
 

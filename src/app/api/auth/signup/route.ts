@@ -3,8 +3,8 @@ import { z } from 'zod'
 import { hash } from 'bcryptjs'
 import slugify from 'slugify'
 
-import { connectToDatabase } from '@/lib/db'
-import { UserModel } from '@/lib/models/User'
+import { connectToDatabase } from '../../../../lib/db'
+import { UserModel } from '../../../../lib/models/User'
 
 const signUpSchema = z.object({
   name: z.string().min(2),

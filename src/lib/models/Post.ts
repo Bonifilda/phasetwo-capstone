@@ -75,7 +75,10 @@ const PostSchema = new Schema<PostDocument>(
   }
 )
 
-PostSchema.index({ title: 'text', content: 'text', tags: 1 })
+// Create indexes safely
+PostSchema.index({ published: 1 })
+PostSchema.index({ author: 1 })
+PostSchema.index({ tags: 1 })
 
 export const PostModel: Model<PostDocument> = models.Post || model<PostDocument>('Post', PostSchema)
 

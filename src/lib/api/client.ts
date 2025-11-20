@@ -56,7 +56,8 @@ function buildUrl(endpoint: string, params?: Record<string, any>): string {
     // Relative URL - construct manually
     const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL
     const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
-    url = new URL(`${baseUrl}${cleanEndpoint}`, window.location.origin)
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'
+    url = new URL(`${baseUrl}${cleanEndpoint}`, origin)
   }
   
   if (params) {

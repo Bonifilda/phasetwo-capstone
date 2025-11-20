@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
-import { listPosts, createPost } from '@/lib/services/postService'
-import { requireSession } from '@/lib/auth/session'
+import { listPosts, createPost } from '../../../lib/services/postService'
+import { requireSession } from '../../../lib/auth/session'
 
 const createPostSchema = z.object({
   title: z.string().min(3),
@@ -24,6 +24,8 @@ export async function GET(request: Request) {
   const published =
     publishedParam === null ? undefined : publishedParam === 'true' ? true : false
 
+  console.log('GET /posts params:', { publishedParam, published, authorId, tag, search })
+
   const result = await listPosts(
     {
       authorId,
@@ -34,6 +36,8 @@ export async function GET(request: Request) {
     page,
     limit
   )
+
+  console.log('Posts result:', { count: result.data.length, total: result.pagination.total })
 
   return NextResponse.json(result)
 }
@@ -48,9 +52,12 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('[POST_CREATE_ERROR]', error)
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: error.issues.map(i => i.message).join(', ') }, { status: 400 })
     }
-    return NextResponse.json({ error: 'Failed to create post' }, { status: 500 })
+    if (error instanceof Error && error.message === 'Unauthorized') {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+    }
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Failed to create post' }, { status: 500 })
   }
 }
 
