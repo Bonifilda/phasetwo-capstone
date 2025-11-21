@@ -33,13 +33,14 @@ export function PostInteractions({ post }: PostInteractionsProps) {
     
     setIsLiking(true)
     try {
-      const response = await fetch(`/api/posts/${post.id}/like`, {
+      const response = await fetch(`/api/posts/${post.id}/toggle-like`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       })
       
       if (response.ok) {
-        setLikeCount(prev => prev + 1)
+        const data = await response.json()
+        setLikeCount(data.likesCount)
       } else {
         console.error('Failed to like post')
       }

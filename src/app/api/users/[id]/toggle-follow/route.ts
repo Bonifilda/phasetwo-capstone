@@ -5,20 +5,22 @@ import { connectToDatabase } from '@/lib/db'
 import { FollowModel } from '@/lib/models/Follow'
 
 interface Params {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export async function POST(_: Request, { params }: Params) {
   try {
     const session = await requireSession()
-    if (session.user.id === params.id) {
+    const { id } = await params
+    
+    if (session.user.id === id) {
       return NextResponse.json({ error: 'Cannot follow yourself' }, { status: 400 })
     }
 
     await connectToDatabase()
     const existing = await FollowModel.findOne({
       follower: session.user.id,
-      following: params.id,
+      following: id,
     })
 
     if (existing) {
@@ -26,7 +28,7 @@ export async function POST(_: Request, { params }: Params) {
       return NextResponse.json({ isFollowing: false })
     }
 
-    await FollowModel.create({ follower: session.user.id, following: params.id })
+    await FollowModel.create({ follower: session.user.id, following: id })
     return NextResponse.json({ isFollowing: true })
   } catch (error) {
     console.error('[FOLLOW_TOGGLE_ERROR]', error)

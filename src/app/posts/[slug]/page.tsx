@@ -8,7 +8,7 @@ import { useLikes } from '@/hooks/useLikes'
 import { useSession } from 'next-auth/react'
 import { useState, use } from 'react'
 import { FollowButton } from '@/components/shared/FollowButton'
-import { LikeButton } from '@/components/shared/LikeButton'
+import { SimpleLikeButton } from '@/components/shared/SimpleLikeButton'
 
 interface PostPageProps {
   params: Promise<{
@@ -37,14 +37,24 @@ export default function PostPage({ params }: PostPageProps) {
 
   const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!commentText.trim()) return
+    if (!commentText.trim() || !postId) return
 
     try {
-      await createComment.mutateAsync({
-        content: commentText.trim(),
-        postId: post?.id || '',
+      const response = await fetch(`/api/posts/${postId}/add-comment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: commentText.trim() })
       })
-      setCommentText('')
+
+      if (response.ok) {
+        const data = await response.json()
+        setCommentText('')
+        // Refresh the page to show updated comment count
+        window.location.reload()
+      } else {
+        const errorData = await response.json()
+        console.error('Failed to add comment:', errorData.error)
+      }
     } catch (error) {
       console.error('Failed to add comment', error)
     }
@@ -94,7 +104,7 @@ export default function PostPage({ params }: PostPageProps) {
                       </>
                     )}
                     <span>•</span>
-                    <LikeButton postId={postId} />
+                    {postId && <SimpleLikeButton postId={postId} initialCount={post.likesCount || 0} />}
                   </div>
                 </header>
 
@@ -106,43 +116,59 @@ export default function PostPage({ params }: PostPageProps) {
                 )}
               </article>
 
-              <section className="mt-12 border-t border-gray-200 pt-8">
-                <h2 className="text-xl font-semibold mb-4">Responses</h2>
-
-                {postId && (
-                  <div className="mb-6">
-                    {session?.user ? (
-                      <form onSubmit={handleAddComment} className="space-y-3">
-                        <textarea
-                          value={commentText}
-                          onChange={(e) => setCommentText(e.target.value)}
-                          placeholder="What are your thoughts?"
-                          rows={3}
-                          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                        />
-                        <div className="flex justify-end">
-                          <button
-                            type="submit"
-                            disabled={createComment.isPending}
-                            className="px-4 py-2 rounded-full bg-green-600 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-60"
-                          >
-                            {createComment.isPending ? 'Sending...' : 'Respond'}
-                          </button>
-                        </div>
-                      </form>
-                    ) : (
-                      <div className="text-center py-4 border border-gray-200 rounded-md">
-                        <p className="text-gray-600 mb-3">Sign in to leave a response</p>
-                        <Link
-                          href="/signin"
-                          className="inline-block px-4 py-2 bg-green-600 text-white rounded-full text-sm font-medium hover:bg-green-700"
-                        >
-                          Sign In
-                        </Link>
-                      </div>
-                    )}
+              {/* Like Section */}
+              <div className="mt-8 py-6 border-y border-gray-200 bg-gray-50">
+                <div className="text-center space-y-4">
+                  <h3 className="text-lg font-semibold">Like this story</h3>
+                  {postId ? (
+                    <SimpleLikeButton postId={postId} initialCount={post.likesCount || 0} />
+                  ) : (
+                    <div className="text-red-500">No Post ID</div>
+                  )}
+                  <div className="text-sm text-gray-600">
+                    Session: {session?.user?.name || 'Not signed in'}
                   </div>
-                )}
+                </div>
+              </div>
+
+              <section className="mt-8 pt-8">
+                <h2 className="text-xl font-semibold mb-6">Comments ({comments.length})</h2>
+
+                <div className="mb-8 p-6 bg-gray-50 rounded-lg">
+                  {session?.user ? (
+                    <form onSubmit={handleAddComment} className="space-y-4">
+                      <textarea
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                        placeholder="What are your thoughts?"
+                        rows={4}
+                        className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">
+                          Signed in as {session.user.name}
+                        </span>
+                        <button
+                          type="submit"
+                          disabled={createComment.isPending || !commentText.trim()}
+                          className="px-6 py-2 rounded-full bg-green-600 text-white font-medium hover:bg-green-700 disabled:opacity-60"
+                        >
+                          {createComment.isPending ? 'Posting...' : 'Post Comment'}
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <div className="text-center py-8">
+                      <p className="text-gray-600 mb-4">Sign in to leave a comment</p>
+                      <Link
+                        href="/signin"
+                        className="inline-block px-6 py-3 bg-green-600 text-white rounded-full font-medium hover:bg-green-700"
+                      >
+                        Sign In to Comment
+                      </Link>
+                    </div>
+                  )}
+                </div>
 
                 {comments.length === 0 && (
                   <p className="text-gray-500 text-sm">No responses yet. Be the first to comment.</p>

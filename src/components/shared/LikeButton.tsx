@@ -37,6 +37,8 @@ export function LikeButton({ postId }: LikeButtonProps) {
   }
 
   const handleLike = async () => {
+    console.log('Like button clicked', { postId, sessionUserId: session?.user?.id })
+    
     if (!session?.user?.id) {
       router.push('/signin')
       return
@@ -46,14 +48,22 @@ export function LikeButton({ postId }: LikeButtonProps) {
     
     setIsLiking(true)
     try {
-      const response = await fetch(`/api/posts/${postId}/like`, {
+      console.log('Making API call to:', `/api/posts/${postId}/toggle-like`)
+      const response = await fetch(`/api/posts/${postId}/toggle-like`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       })
       
+      console.log('API response status:', response.status)
+      
       if (response.ok) {
-        setLikeCount(prev => prev + 1)
-        setIsLiked(true)
+        const data = await response.json()
+        console.log('API response data:', data)
+        setLikeCount(data.likesCount)
+        setIsLiked(data.isLiked)
+      } else {
+        const errorData = await response.json()
+        console.error('API error:', errorData)
       }
     } catch (error) {
       console.error('Failed to like post:', error)
@@ -68,10 +78,15 @@ export function LikeButton({ postId }: LikeButtonProps) {
     <button
       onClick={handleLike}
       disabled={isLiking}
-      className="inline-flex items-center gap-1 text-sm text-gray-700 hover:text-green-600 disabled:opacity-60 transition-colors"
+      className="flex flex-col items-center gap-2 px-6 py-4 rounded-lg border border-gray-200 hover:border-green-500 hover:bg-green-50 disabled:opacity-60 transition-all duration-200 min-w-[100px]"
     >
-      <span>{isLiked ? '👏 Liked' : '👏 Clap'}</span>
-      <span className="text-gray-500">{likeCount}</span>
+      <span className="text-2xl">👏</span>
+      <span className="text-sm font-medium text-gray-700">
+        {isLiking ? 'Loading...' : likeCount}
+      </span>
+      <span className="text-xs text-gray-500">
+        {isLiked ? 'Liked' : 'Clap'}
+      </span>
     </button>
   )
 }
