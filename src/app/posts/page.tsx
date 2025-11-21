@@ -13,13 +13,13 @@ export default function PostsPage() {
   const posts = data?.data ?? []
 
   return (
-    <div className="py-16 bg-gray-50 min-h-screen">
+    <div className="py-12 sm:py-16 lg:py-20 bg-gray-50 min-h-screen">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900">
             Latest Stories
           </h1>
-          <p className="mt-6 text-lg leading-8 text-gray-600 max-w-2xl mx-auto">
+          <p className="mt-4 sm:mt-6 text-base sm:text-lg lg:text-xl leading-7 sm:leading-8 text-gray-600 max-w-xl lg:max-w-2xl mx-auto px-4">
             Discover amazing stories from our community of writers.
           </p>
         </div>
@@ -35,7 +35,7 @@ export default function PostsPage() {
         )}
 
         {!isLoading && !isError && posts.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {posts.map((post, index) => {
               // Create a unique key, using index as fallback if id is undefined
               const uniqueKey = post.id ? `post-${post.id}` : `post-index-${index}`;
@@ -45,27 +45,27 @@ export default function PostsPage() {
                   key={uniqueKey}
                   className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
                 >
-                  <div className="p-6">
-                    <h2 className="text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
+                  <div className="p-4 sm:p-6">
+                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 line-clamp-2">
                       {post.title || 'Untitled Post'}
                     </h2>
                     {post.excerpt && (
-                      <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
+                      <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 line-clamp-3">{post.excerpt}</p>
                     )}
-                    <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
-                      <span>{post.author?.name || 'Unknown author'}</span>
-                      {post.readTime && <span>{post.readTime} min read</span>}
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs sm:text-sm text-gray-500 mb-3 gap-1 sm:gap-0">
+                      <span className="truncate">{post.author?.name || 'Unknown author'}</span>
+                      {post.readTime && <span className="flex-shrink-0">{post.readTime} min read</span>}
                     </div>
                     {post.author?.id && (
                       <div className="mb-3">
-                        <FollowButton userId={post.author.id} className="text-xs px-3 py-1" />
+                        <FollowButton userId={post.author.id} className="text-xs px-2 sm:px-3 py-1" />
                       </div>
                     )}
-                    <div className="flex items-center justify-between mt-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-3 sm:mt-4 gap-2 sm:gap-0">
                       <PostInteractions post={post} />
                       <Link
                         href={`/posts/${post.slug || post.id || '#'}`}
-                        className="text-green-600 hover:text-green-700 font-medium text-sm"
+                        className="text-green-600 hover:text-green-700 font-medium text-sm text-center sm:text-left"
                       >
                         Read more →
                       </Link>
