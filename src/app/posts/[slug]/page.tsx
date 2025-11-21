@@ -3,8 +3,6 @@
 
 import Link from 'next/link'
 import { usePostBySlug } from '@/hooks/usePosts'
-import { useComments, useCreateComment } from '@/hooks/useComments'
-import { useLikes } from '@/hooks/useLikes'
 import { useSession } from 'next-auth/react'
 import { useState, use } from 'react'
 import { FollowButton } from '@/components/shared/FollowButton'
@@ -19,25 +17,20 @@ interface PostPageProps {
 export default function PostPage({ params }: PostPageProps) {
   const { slug } = use(params)
   const { data: post, isLoading, isError } = usePostBySlug(slug)
-  const postId = post?.id
-  const commentsHook = postId ? useComments({ postId, page: 1, limit: 50 }) : undefined
-  const likesHook = postId ? useLikes(postId) : undefined
-  const commentsData = commentsHook?.data
-  const likesData = likesHook?.data
-  const toggleLike = likesHook?.toggleLike as any
-  const isLiking = likesHook?.isLiking as boolean | undefined
   const { data: session } = useSession()
-
+  
   const [commentText, setCommentText] = useState('')
-  const createComment = useCreateComment()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [commentSuccess, setCommentSuccess] = useState('')
 
-  const comments = commentsData?.data ?? []
-  const likesCount = likesData?.likesCount ?? 0
-  const isLiked = likesData?.isLiked ?? false
+  const postId = post?._id || post?.id
 
   const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!commentText.trim() || !postId) return
+    if (!commentText.trim() || !postId || isSubmitting) return
+
+    setIsSubmitting(true)
+    setCommentSuccess('')
 
     try {
       const response = await fetch(`/api/posts/${postId}/add-comment`, {
@@ -49,14 +42,19 @@ export default function PostPage({ params }: PostPageProps) {
       if (response.ok) {
         const data = await response.json()
         setCommentText('')
-        // Refresh the page to show updated comment count
-        window.location.reload()
+        setCommentSuccess('Comment added successfully! 🎉')
+        // Update comment count in UI
+        setTimeout(() => {
+          window.location.reload()
+        }, 1000)
       } else {
         const errorData = await response.json()
-        console.error('Failed to add comment:', errorData.error)
+        setCommentSuccess(`Error: ${errorData.error}`)
       }
     } catch (error) {
-      console.error('Failed to add comment', error)
+      setCommentSuccess('Failed to add comment. Please try again.')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -120,19 +118,14 @@ export default function PostPage({ params }: PostPageProps) {
               <div className="mt-8 py-6 border-y border-gray-200 bg-gray-50">
                 <div className="text-center space-y-4">
                   <h3 className="text-lg font-semibold">Like this story</h3>
-                  {postId ? (
+                  {postId && (
                     <SimpleLikeButton postId={postId} initialCount={post.likesCount || 0} />
-                  ) : (
-                    <div className="text-red-500">No Post ID</div>
                   )}
-                  <div className="text-sm text-gray-600">
-                    Session: {session?.user?.name || 'Not signed in'}
-                  </div>
                 </div>
               </div>
 
               <section className="mt-8 pt-8">
-                <h2 className="text-xl font-semibold mb-6">Comments ({comments.length})</h2>
+                <h2 className="text-xl font-semibold mb-6">Comments</h2>
 
                 <div className="mb-8 p-6 bg-gray-50 rounded-lg">
                   {session?.user ? (
@@ -150,12 +143,19 @@ export default function PostPage({ params }: PostPageProps) {
                         </span>
                         <button
                           type="submit"
-                          disabled={createComment.isPending || !commentText.trim()}
+                          disabled={isSubmitting || !commentText.trim()}
                           className="px-6 py-2 rounded-full bg-green-600 text-white font-medium hover:bg-green-700 disabled:opacity-60"
                         >
-                          {createComment.isPending ? 'Posting...' : 'Post Comment'}
+                          {isSubmitting ? 'Posting...' : 'Post Comment'}
                         </button>
                       </div>
+                      {commentSuccess && (
+                        <div className={`mt-3 p-3 rounded-md text-sm ${
+                          commentSuccess.includes('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
+                        }`}>
+                          {commentSuccess}
+                        </div>
+                      )}
                     </form>
                   ) : (
                     <div className="text-center py-8">
@@ -170,23 +170,7 @@ export default function PostPage({ params }: PostPageProps) {
                   )}
                 </div>
 
-                {comments.length === 0 && (
-                  <p className="text-gray-500 text-sm">No responses yet. Be the first to comment.</p>
-                )}
-
-                <ul className="space-y-4">
-                  {comments.map((comment) => (
-                    <li key={comment.id} className="border-b border-gray-100 pb-4">
-                      <div className="text-sm text-gray-700 mb-1">
-                        {comment.author?.name ?? 'Anonymous'}
-                      </div>
-                      <p className="text-gray-800 text-sm whitespace-pre-wrap">{comment.content}</p>
-                      <div className="text-xs text-gray-400 mt-1">
-                        {new Date(comment.createdAt).toLocaleString()}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                <p className="text-gray-500 text-sm">Comments will be loaded here.</p>
               </section>
             </>
           )}

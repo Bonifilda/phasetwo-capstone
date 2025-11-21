@@ -10,13 +10,13 @@ export function useLikes(postId: string) {
   const { data: statusData } = useQuery({
     queryKey: ['post-like-status', postId],
     queryFn: () => likesApi.checkLikeStatus(postId),
-    enabled: !!postId,
+    enabled: !!postId && postId !== '',
   })
 
   const { data: likesList } = useQuery({
     queryKey: ['post-likes', postId],
     queryFn: () => likesApi.getPostLikes({ postId, page: 1, limit: 1 }),
-    enabled: !!postId,
+    enabled: !!postId && postId !== '',
   })
 
   const toggleLike = useMutation({

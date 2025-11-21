@@ -19,7 +19,7 @@ export function useComments(params: GetCommentsParams) {
   return useQuery({
     queryKey: commentKeys.list(params),
     queryFn: () => commentsApi.getComments(params),
-    enabled: !!params.postId,
+    enabled: !!params.postId && params.postId !== '',
   })
 }
 
