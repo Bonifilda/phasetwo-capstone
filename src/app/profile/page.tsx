@@ -32,7 +32,16 @@ export default function ProfilePage() {
       })
 
       if (response.ok) {
+        const updatedData = await response.json()
         setMessage('Profile updated successfully!')
+        
+        // Update local state with fresh data
+        if (updatedData.user) {
+          setName(updatedData.user.name || '')
+          setBio(updatedData.user.bio || '')
+        }
+        
+        // Also update session
         await update()
       } else {
         const errorData = await response.json()

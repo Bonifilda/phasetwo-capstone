@@ -69,6 +69,18 @@ export const authOptions: NextAuthOptions = {
       if (session.user && token.userId) {
         session.user.id = token.userId as string
         session.user.username = (token.username as string | undefined) ?? null
+        
+        // Fetch fresh user data from database
+        try {
+          await connectToDatabase()
+          const user = await UserModel.findById(token.userId).select('name bio').lean()
+          if (user) {
+            session.user.name = user.name
+            session.user.bio = user.bio
+          }
+        } catch (e) {
+          console.error('[SESSION_UPDATE_ERROR]', e)
+        }
       }
       return session
     },
