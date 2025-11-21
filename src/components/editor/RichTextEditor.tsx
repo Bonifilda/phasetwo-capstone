@@ -87,8 +87,8 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
   }
 
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden bg-black">
-      <div className="border-b border-gray-200 bg-gray-50 px-3 py-2 flex flex-wrap gap-2">
+    <div className="border border-gray-200 rounded-lg overflow-hidden bg-white text-black ">
+      <div className="border-b border bg-white px-3 py-2 flex flex-wrap gap-2">
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}

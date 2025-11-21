@@ -81,8 +81,8 @@ export default function CreatePostPage() {
       <div className="py-10 bg-gray-50 min-h-screen">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Write a story</h1>
-            <p className="mt-2 text-gray-600">
+            <h1 className="text-3xl font-bold bg-black">Write a story</h1>
+            <p className="mt-2 text-black">
               Share your ideas with the world. You can save a draft or publish when you&apos;re
               ready.
             </p>
@@ -101,12 +101,12 @@ export default function CreatePostPage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Title"
-                className="w-full text-3xl font-bold border-0 border-b border-gray-200 focus:border-gray-400 focus:ring-0 px-0 py-2 bg-transparent"
+                className="w-full text-3xl font-bold border-0 border-b text-black border-gray-200 focus:border-gray-400 focus:ring-0 px-0 py-2 bg-transparent"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium bg-white text-black mb-1">
                 Tags (comma separated)
               </label>
               <input
@@ -114,7 +114,7 @@ export default function CreatePostPage() {
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
                 placeholder="e.g. javascript, webdev, life"
-                className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                className="w-full rounded-md border  px-3 py-2 text-sm focus:outline-none focus:ring-2 bg-white text-black "
               />
             </div>
 
@@ -125,7 +125,7 @@ export default function CreatePostPage() {
                 type="button"
                 disabled={isPublishing}
                 onClick={() => handleSubmit(false)}
-                className="px-4 py-2 rounded-full border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-100 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="px-4 py-2 rounded-full border border-gray-300 text-sm font-medium bg-green-300 text-black  disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 Save as draft
               </button>
@@ -133,7 +133,7 @@ export default function CreatePostPage() {
                 type="button"
                 disabled={isPublishing}
                 onClick={() => handleSubmit(true)}
-                className="px-6 py-2 rounded-full bg-green-600 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="px-6 py-2 rounded-full bg-green-300 text-sm font-medium text-black disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {isPublishing ? 'Publishing...' : 'Publish'}
               </button>

@@ -6,7 +6,7 @@ import { requireSession } from '../../../lib/auth/session'
 
 const createPostSchema = z.object({
   title: z.string().min(3),
-  content: z.string().min(20),
+  content: z.string().min(10),
   tags: z.array(z.string()).optional(),
   coverImage: z.string().url().optional(),
   published: z.boolean().optional(),
