@@ -3,7 +3,7 @@ import { Schema, model, models, type Model, type Document } from 'mongoose'
 export interface UserDocument extends Document {
   name: string
   email: string
-  password: string
+  password?: string
   username?: string
   bio?: string
   avatar?: string
@@ -14,6 +14,8 @@ export interface UserDocument extends Document {
     github?: string
     linkedin?: string
   }
+  lastLogin?: Date
+  loginCount: number
   createdAt: Date
   updatedAt: Date
 }

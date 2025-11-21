@@ -26,7 +26,7 @@ export default async function TestDBPage() {
           } border`}
         >
           <div className="flex">
-            <div className="flex-shrink-0">
+            <div className="flex">
               {status === 'success' ? (
                 <svg className="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
                   <path

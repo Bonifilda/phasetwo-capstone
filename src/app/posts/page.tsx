@@ -54,7 +54,7 @@ export default function PostsPage() {
                     )}
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs sm:text-sm text-gray-500 mb-3 gap-1 sm:gap-0">
                       <span className="truncate">{post.author?.name || 'Unknown author'}</span>
-                      {post.readTime && <span className="flex-shrink-0">{post.readTime} min read</span>}
+                      {post.readTime && <span className="flex">{post.readTime} min read</span>}
                     </div>
                     {post.author?.id && (
                       <div className="mb-3">

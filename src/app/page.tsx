@@ -10,7 +10,7 @@ export default function Home() {
       <Header />
       
       <main className="flex-1">
-        <section className="bg-gradient-to-br from-blue-50 to-green-50 py-12 sm:py-16 lg:py-20">
+        <section className="bg-sky-400 to-green-50 py-12 sm:py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900">
