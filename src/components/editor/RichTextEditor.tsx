@@ -87,14 +87,14 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
   }
 
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+    <div className="border border-gray-200 rounded-lg overflow-hidden bg-black">
       <div className="border-b border-gray-200 bg-gray-50 px-3 py-2 flex flex-wrap gap-2">
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           className={`px-2 py-1 text-sm rounded ${
             editor.isActive('heading', { level: 2 })
-              ? 'bg-gray-900 text-white'
+              ? 'bg-gray-900 text-black'
               : 'text-gray-700 hover:bg-gray-200'
           }`}
         >
@@ -105,7 +105,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
           className={`px-2 py-1 text-sm rounded ${
             editor.isActive('heading', { level: 3 })
-              ? 'bg-gray-900 text-white'
+              ? 'bg-gray-900 text-black'
               : 'text-gray-700 hover:bg-gray-200'
           }`}
         >
@@ -115,7 +115,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={`px-2 py-1 text-sm rounded ${
-            editor.isActive('bold') ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-200'
+            editor.isActive('bold') ? 'bg-gray-900 text-black' : 'text-gray-700 hover:bg-gray-200'
           }`}
         >
           Bold
@@ -125,7 +125,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={`px-2 py-1 text-sm rounded ${
             editor.isActive('italic')
-              ? 'bg-gray-900 text-white'
+              ? 'bg-gray-900 text-black'
               : 'text-gray-700 hover:bg-gray-200'
           }`}
         >
@@ -136,7 +136,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={`px-2 py-1 text-sm rounded ${
             editor.isActive('bulletList')
-              ? 'bg-gray-900 text-white'
+              ? 'bg-gray-900 text-black'
               : 'text-gray-700 hover:bg-gray-200'
           }`}
         >
@@ -147,7 +147,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={`px-2 py-1 text-sm rounded ${
             editor.isActive('orderedList')
-              ? 'bg-gray-900 text-white'
+              ? 'bg-gray-900 text-black'
               : 'text-gray-700 hover:bg-gray-200'
           }`}
         >
@@ -158,7 +158,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           className={`px-2 py-1 text-sm rounded ${
             editor.isActive('blockquote')
-              ? 'bg-gray-900 text-white'
+              ? 'bg-gray-900 text-black'
               : 'text-gray-700 hover:bg-gray-200'
           }`}
         >
@@ -169,7 +169,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
           className={`px-2 py-1 text-sm rounded ${
             editor.isActive('codeBlock')
-              ? 'bg-gray-900 text-white'
+              ? 'bg-gray-900 text-black'
               : 'text-gray-700 hover:bg-gray-200'
           }`}
         >
