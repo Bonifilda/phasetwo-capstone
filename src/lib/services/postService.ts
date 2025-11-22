@@ -1,4 +1,5 @@
 import type { FilterQuery } from 'mongoose'
+import { Types } from 'mongoose'
 import { PostModel, type PostDocument } from '@/lib/models/Post'
 import { connectToDatabase } from '@/lib/db'
 import { generateSlug, createExcerpt, calculateReadingTime } from '@/lib/utils'
@@ -49,8 +50,11 @@ export async function listPosts(filters: PostFilters, page = 1, limit = 10) {
   await connectToDatabase()
   const query: FilterQuery<PostDocument> = {}
 
+  // ✅ FIX: Convert authorId to ObjectId so it matches MongoDB
   if (filters.authorId) {
-    query.author = filters.authorId
+    query.author = new Types.ObjectId(filters.authorId)
+    console.log('listPosts - Filtering by authorId:', filters.authorId)
+    console.log('listPosts - Query author ObjectId:', query.author)
   }
 
   if (filters.published !== undefined) {
@@ -70,6 +74,8 @@ export async function listPosts(filters: PostFilters, page = 1, limit = 10) {
 
   const skip = (page - 1) * limit
 
+  console.log('listPosts - Final query:', JSON.stringify(query, null, 2))
+
   const [data, total] = await Promise.all([
     PostModel.find(query)
       .populate('author', 'name username avatar')
@@ -79,6 +85,16 @@ export async function listPosts(filters: PostFilters, page = 1, limit = 10) {
       .lean(),
     PostModel.countDocuments(query),
   ])
+
+  console.log('listPosts - Results:', {
+    foundPosts: data.length,
+    totalCount: total,
+    samplePost: data[0] ? {
+      id: data[0]._id,
+      title: data[0].title,
+      authorId: data[0].author
+    } : null
+  })
 
   return {
     data,
@@ -95,9 +111,7 @@ export async function listPosts(filters: PostFilters, page = 1, limit = 10) {
 export async function getPost(identifier: string) {
   await connectToDatabase()
   
-  if (!identifier) {
-    return null
-  }
+  if (!identifier) return null
   
   const query = identifier.match(/^[0-9a-fA-F]{24}$/)
     ? { _id: identifier }
@@ -106,21 +120,18 @@ export async function getPost(identifier: string) {
   return PostModel.findOne(query).populate('author', 'name username avatar bio').lean()
 }
 
-// Helper function to clean and validate tags
 function cleanTags(tags: string[] = []): string[] {
   return tags
     .map(tag => 
-      tag
-        .toString()
+      tag.toString()
         .toLowerCase()
         .trim()
-        // Remove special characters and limit length
         .replace(/[^a-z0-9\s-]/g, '')
         .replace(/\s+/g, '-')
-        .slice(0, 30) // Limit tag length to 30 characters
+        .slice(0, 30)
     )
-    .filter(Boolean) // Remove empty strings
-    .filter((tag, index, self) => self.indexOf(tag) === index) // Remove duplicates
+    .filter(Boolean)
+    .filter((tag, index, self) => self.indexOf(tag) === index)
 }
 
 export async function createPost(input: PostInput, authorId: string) {
@@ -135,14 +146,13 @@ export async function createPost(input: PostInput, authorId: string) {
     counter += 1
   }
 
-  // Simplified tag handling - just use the tags as strings
   const tags = input.tags ? cleanTags(input.tags) : []
 
   const postData = {
     title: input.title,
     content: input.content,
     slug,
-    author: authorId,
+    author: new Types.ObjectId(authorId),   // ⭐ Stored correctly
     tags,
     published: Boolean(input.published),
     coverImage: input.coverImage,
@@ -174,7 +184,7 @@ export async function updatePost(id: string, data: Partial<PostInput>, authorId:
   }
 
   const post = await PostModel.findOneAndUpdate(
-    { _id: id, author: authorId },
+    { _id: id, author: new Types.ObjectId(authorId) },
     updatePayload,
     { new: true }
   ).populate('author', 'name username avatar')
@@ -184,14 +194,14 @@ export async function updatePost(id: string, data: Partial<PostInput>, authorId:
 
 export async function deletePost(id: string, authorId: string) {
   await connectToDatabase()
-  await PostModel.findOneAndDelete({ _id: id, author: authorId })
+  await PostModel.findOneAndDelete({ _id: id, author: new Types.ObjectId(authorId) })
 }
 
 export async function togglePublishPost(id: string, authorId: string, published: boolean) {
   await connectToDatabase()
 
   return PostModel.findOneAndUpdate(
-    { _id: id, author: authorId },
+    { _id: id, author: new Types.ObjectId(authorId) },
     { published },
     { new: true }
   ).populate('author', 'name username avatar')
@@ -212,10 +222,12 @@ export async function getFeed(
     query.author = { $in: followingIds }
   }
 
-  const sort =
-    type === 'recommended'
-      ? { likesCount: -1 as const, commentsCount: -1 as const }
-      : { createdAt: -1 as const }
+  let sort: Record<string, -1 | 1>
+  if (type === 'recommended') {
+    sort = { likesCount: -1, commentsCount: -1 }
+  } else {
+    sort = { createdAt: -1 }
+  }
 
   const skip = (page - 1) * limit
 
@@ -240,4 +252,3 @@ export async function getFeed(
     },
   }
 }
-

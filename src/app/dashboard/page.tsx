@@ -8,18 +8,23 @@ import { useSession } from 'next-auth/react'
 
 export default function DashboardPage() {
   const { data: session } = useSession()
-
-  const { data: postsData, isLoading } = usePosts({
-    authorId: session?.user?.id
+  
+  // Get ALL posts from database (no author filter)
+  const { data: postsData, isLoading } = usePosts({ 
+    limit: 100,
+    published: undefined // Get both published and drafts
   })
-
+  
   if (isLoading) {
     return <p className="p-10">Loading...</p>
   }
 
-  const posts = postsData?.data || []
-  const published = posts.filter(p => p.published).length
-  const drafts = posts.filter(p => !p.published).length
+  const allPosts = postsData?.data || []
+  const total = allPosts.length
+  const published = allPosts.filter(p => p.published === true).length
+  const drafts = allPosts.filter(p => p.published === false).length
+  
+  console.log('All MongoDB Posts:', { total, published, drafts, sampleAuthors: allPosts.slice(0,3).map(p => p.author) })
 
   return (
     <ProtectedRoute>
@@ -30,20 +35,26 @@ export default function DashboardPage() {
             <p className="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600">Manage your stories and profile</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm">
-              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Your Stories</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Total Posts</h3>
+              <p className="mt-2 text-2xl sm:text-3xl font-bold text-purple-600">{total}</p>
+              <p className="text-sm sm:text-base text-gray-600">All posts in database</p>
+            </div>
+            
+            <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Published</h3>
               <p className="mt-2 text-2xl sm:text-3xl font-bold text-green-600">{published}</p>
-              <p className="text-sm sm:text-base text-gray-600">Published stories</p>
+              <p className="text-sm sm:text-base text-gray-600">Live stories</p>
             </div>
 
             <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm">
               <h3 className="text-base sm:text-lg font-semibold text-gray-900">Drafts</h3>
               <p className="mt-2 text-2xl sm:text-3xl font-bold text-yellow-600">{drafts}</p>
-              <p className="text-sm sm:text-base text-gray-600">Unpublished stories</p>
+              <p className="text-sm sm:text-base text-gray-600">Unpublished</p>
             </div>
 
-            <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm sm:col-span-2 lg:col-span-1">
+            <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm">
               <h3 className="text-base sm:text-lg font-semibold text-gray-900">Readers</h3>
               <p className="mt-2 text-2xl sm:text-3xl font-bold text-blue-600">0</p>
               <p className="text-sm sm:text-base text-gray-600">Total readers</p>

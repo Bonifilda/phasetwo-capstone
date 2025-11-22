@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
+import Link from 'next/link'
+import { useCurrentUserStats } from '@/hooks'
 import ProtectedRoute from "@/components/auth/protectedRoute"
 
 export default function ProfilePage() {
@@ -10,13 +12,43 @@ export default function ProfilePage() {
   const [bio, setBio] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const [stats, setStats] = useState({ followers: 0, following: 0, posts: 0 })
+  
+  // Use hooks for real-time data
+  const { data: hookStats } = useCurrentUserStats()
+  
+  // Update stats when hook data is available
+  useEffect(() => {
+    if (hookStats) {
+      setStats({
+        followers: hookStats.followersCount || 0,
+        following: hookStats.followingCount || 0,
+        posts: hookStats.postsCount || 0
+      })
+    }
+  }, [hookStats])
 
   useEffect(() => {
     if (session?.user) {
       setName(session.user.name || '')
       setBio(session.user.bio || '')
+      fetchUserStats()
     }
   }, [session])
+
+  const fetchUserStats = async () => {
+    if (!session?.user?.id) return
+    
+    try {
+      const response = await fetch('/api/users/me/stats')
+      if (response.ok) {
+        const data = await response.json()
+        setStats(data.stats || { followers: 0, following: 0, posts: 0 })
+      }
+    } catch (error) {
+      console.error('Failed to fetch stats:', error)
+    }
+  }
 
   const handleSave = async () => {
     if (!session?.user?.id) return
@@ -95,6 +127,22 @@ export default function ProfilePage() {
                       className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                       placeholder="Tell us about yourself..."
                     />
+                  </div>
+
+                  {/* Stats Section */}
+                  <div className="grid grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
+                    <Link href="/profile/followers" className="text-center hover:bg-gray-100 p-2 rounded transition-colors">
+                      <div className="text-xl font-bold text-gray-900">{stats.followers}</div>
+                      <div className="text-sm text-gray-600">Followers</div>
+                    </Link>
+                    <Link href="/profile/following" className="text-center hover:bg-gray-100 p-2 rounded transition-colors">
+                      <div className="text-xl font-bold text-gray-900">{stats.following}</div>
+                      <div className="text-sm text-gray-600">Following</div>
+                    </Link>
+                    <div className="text-center p-2">
+                      <div className="text-xl font-bold text-gray-900">{stats.posts}</div>
+                      <div className="text-sm text-gray-600">Posts</div>
+                    </div>
                   </div>
 
                   <div>

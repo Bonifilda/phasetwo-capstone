@@ -24,6 +24,16 @@ export async function GET(request: Request) {
   const published =
     publishedParam === null ? undefined : publishedParam === 'true' ? true : false
 
+  // Debug logging
+  console.log('API Posts GET - Filters:', {
+    authorId,
+    published,
+    tag,
+    search,
+    page,
+    limit
+  })
+
   const result = await listPosts(
     {
       authorId,
@@ -34,6 +44,11 @@ export async function GET(request: Request) {
     page,
     limit
   )
+
+  console.log('API Posts GET - Result:', {
+    totalFound: result.data.length,
+    total: result.pagination.total
+  })
 
   return NextResponse.json(result)
 }

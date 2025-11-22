@@ -26,7 +26,7 @@ export const authOptions: NextAuthOptions = {
 
         await connectToDatabase()
         const user = await UserModel.findOne({ email: credentials.email }).select('+password')
-        if (!user) {
+        if (!user || !user.password) {
           return null
         }
 
