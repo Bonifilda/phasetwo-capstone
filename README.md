@@ -47,12 +47,6 @@ npm install
 
 Create a `.env.local` file in the root directory:
 
-`env
-# Database
-MONGODB_URI=mongodb://localhost:27017/medium-platform
-# Or for MongoDB Atlas:
-# MONGODB_URI=mongodb+srv://bonifilda:nkundakurya12@cluster0.pahsmam.mongodb.net/auth_app"
-
 # NextAuth Configuration
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your-super-secret-key-here
