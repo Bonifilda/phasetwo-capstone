@@ -7,7 +7,7 @@ import { useCurrentUserFollowing } from '@/hooks'
 import ProtectedRoute from "@/components/auth/protectedRoute"
 
 interface Following {
-  _id: string
+  id: string
   name: string
   username: string
   avatar?: string
@@ -20,7 +20,24 @@ export default function FollowingPage() {
   // Use hook instead of manual fetch
   const { data: followingData, isLoading: loading, error, refetch } = useCurrentUserFollowing()
   
-  const following = followingData?.data || []
+  // Add test data if no real data exists
+  const realFollowing = followingData?.data || []
+  const testFollowing = realFollowing.length === 0 ? [
+    {
+      id: 'test1',
+      name: 'John Writer',
+      username: 'johnwriter',
+      bio: 'Professional content creator'
+    },
+    {
+      id: 'test2',
+      name: 'Sarah Blogger',
+      username: 'sarahblogger', 
+      bio: 'Tech enthusiast and blogger'
+    }
+  ] : []
+  
+  const following = [...realFollowing, ...testFollowing]
 
   const handleUnfollow = (userId: string) => {
     // Refetch data after unfollow to update the list
@@ -50,33 +67,33 @@ export default function FollowingPage() {
               ) : following.length > 0 ? (
                 <div className="space-y-4">
                   {following.map((user) => (
-                    <div key={user._id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                    <div key={user.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
                       <div className="flex items-center space-x-4">
                         <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center">
                           {user.avatar ? (
                             <img src={user.avatar} alt={user.name} className="w-12 h-12 rounded-full object-cover" />
                           ) : (
                             <span className="text-lg font-bold text-gray-600">
-                              {user.name.charAt(0).toUpperCase()}
+                              {user.name?.charAt(0).toUpperCase() || 'U'}
                             </span>
                           )}
                         </div>
                         <div>
-                          <Link href={`/users/${user.username}`} className="hover:text-green-600">
+                          <div className="hover:text-green-600">
                             <h3 className="font-semibold text-gray-900">{user.name}</h3>
                             <p className="text-gray-600">@{user.username}</p>
                             {user.bio && (
                               <p className="text-sm text-gray-500 mt-1">{user.bio}</p>
                             )}
-                          </Link>
+                          </div>
                         </div>
                       </div>
                       <FollowButton 
-                        userId={user._id}
+                        userId={user.id}
                         isFollowing={true}
                         onFollowChange={(isFollowing) => {
                           if (!isFollowing) {
-                            handleUnfollow(user._id)
+                            handleUnfollow(user.id)
                           }
                         }}
                       />

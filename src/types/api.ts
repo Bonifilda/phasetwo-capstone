@@ -199,13 +199,19 @@ export interface GetFollowersParams extends PaginationParams {
   userId: string
 }
 
-export interface GetFollowersResponse extends PaginatedResponse<User> {}
+export interface GetFollowersResponse extends PaginatedResponse<User> {
+  followers: any
+  users: any;
+}
 
 export interface GetFollowingParams extends PaginationParams {
   userId: string
 }
 
-export interface GetFollowingResponse extends PaginatedResponse<User> {}
+export interface GetFollowingResponse extends PaginatedResponse<User> {
+  following: any
+  users: any;
+}
 
 export interface CheckFollowStatusResponse {
   isFollowing: boolean

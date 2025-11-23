@@ -14,15 +14,21 @@ export async function GET(request: Request) {
 
   const skip = (page - 1) * limit
 
-  const [data, total] = await Promise.all([
+  const [follows, total] = await Promise.all([
     FollowModel.find({ following: session.user.id })
-      .populate('follower', 'name username avatar headline')
+      .populate('follower', 'name username avatar headline bio')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .lean(),
     FollowModel.countDocuments({ following: session.user.id }),
   ])
+
+  // Transform to return user data with id field
+  const data = follows.map(follow => ({
+    ...follow.follower,
+    id: follow.follower._id.toString()
+  }))
 
   return NextResponse.json({
     data,

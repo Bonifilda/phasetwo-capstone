@@ -14,6 +14,13 @@ export async function GET(request: Request) {
     .select('name username avatar headline bio')
     .lean()
 
-  return NextResponse.json({ users })
+  // Transform _id to id for frontend compatibility
+  const transformedUsers = users.map(user => ({
+    ...user,
+    id: user._id.toString(),
+    _id: undefined
+  }))
+
+  return NextResponse.json({ users: transformedUsers })
 }
 

@@ -13,6 +13,10 @@ export async function POST(_: Request, { params }: Params) {
     const session = await requireSession()
     const { id } = await params
     
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    
     if (session.user.id === id) {
       return NextResponse.json({ error: 'Cannot follow yourself' }, { status: 400 })
     }
@@ -31,7 +35,15 @@ export async function POST(_: Request, { params }: Params) {
     await FollowModel.create({ follower: session.user.id, following: id })
     return NextResponse.json({ isFollowing: true })
   } catch (error) {
-    console.error('[FOLLOW_TOGGLE_ERROR]', error)
+    console.error('[FOLLOW_TOGGLE_ERROR]', {
+      error: error.message,
+      stack: error.stack
+    })
+    
+    if (error.message === 'Unauthorized') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    
     return NextResponse.json({ error: 'Failed to toggle follow' }, { status: 500 })
   }
 }

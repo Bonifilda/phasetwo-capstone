@@ -27,7 +27,8 @@ export default function AboutPage() {
             <ul className="text-sm sm:text-base text-gray-600 space-y-2 leading-6 sm:leading-7">
               <li>• Rich text editor for beautiful writing</li>
               <li>• Social features like comments and likes</li>
-              <li>• User profiles and following system</li>
+
+                <li>• User profiles and following system</li>
               <li>• Tag-based organization</li>
               <li>• SEO optimized pages</li>
             </ul>

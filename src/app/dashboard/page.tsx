@@ -61,29 +61,31 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="mt-6 sm:mt-8 bg-black p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm">
+          <div className="mt-6 sm:mt-8 bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm">
             <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Quick Actions</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               <Link
                 href="/create"
-                className="bg-green-600 text-black px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium hover:bg-green-700 transition-colors text-center"
+                className="bg-green-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium hover:bg-green-700 transition-colors text-center"
               >
                 Write a Story
               </Link>
               <Link
                 href="/profile"
-                className="bg-gray-600 text-black px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium hover:bg-gray-700 transition-colors text-center"
+                className="bg-gray-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium hover:bg-gray-700 transition-colors text-center"
               >
                 Edit Profile
               </Link>
               <Link
                 href="/posts"
-                className="bg-blue-600 text-black px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium hover:bg-blue-700 transition-colors text-center sm:col-span-2 lg:col-span-1"
+                className="bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium hover:bg-blue-700 transition-colors text-center sm:col-span-2 lg:col-span-1"
               >
                 Browse Stories
               </Link>
             </div>
           </div>
+
+
         </div>
       </div>
     </ProtectedRoute>

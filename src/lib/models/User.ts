@@ -14,6 +14,8 @@ export interface UserDocument extends Document {
     github?: string
     linkedin?: string
   }
+  followers: Schema.Types.ObjectId[]
+  following: Schema.Types.ObjectId[]
   lastLogin?: Date
   loginCount: number
   createdAt: Date
@@ -65,6 +67,23 @@ const UserSchema = new Schema<UserDocument>(
       github: String,
       linkedin: String,
     },
+
+    // ⭐⭐ ADD THESE TWO ⭐⭐
+    followers: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        default: [],
+      },
+    ],
+    following: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        default: [],
+      },
+    ],
+
     lastLogin: {
       type: Date,
     },
@@ -85,5 +104,5 @@ const UserSchema = new Schema<UserDocument>(
   }
 )
 
-export const UserModel: Model<UserDocument> = models.User || model<UserDocument>('User', UserSchema)
-
+export const UserModel: Model<UserDocument> =
+  models.User || model<UserDocument>('User', UserSchema)
