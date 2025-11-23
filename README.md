@@ -54,31 +54,14 @@ NEXTAUTH_SECRET=your-super-secret-key-here
 
 # Development
 NODE_ENV=development
-```
+`
 
 # 4. Database Setup
 
 # Option A: Local MongoDB
 1. Install MongoDB locally
 2. Start MongoDB service
-3. Use connection string: `mongodb://localhost:27017/medium-platform`
-
-# Option B: MongoDB Atlas (Recommended)
-1. Create account at [MongoDB Atlas](https://www.mongodb.com/atlas)
-2. Create a new cluster
-3. Get connection string and add to `.env.local`
-
-### 5. Run Development Server
-
-```bash
-npm run dev
-```
-
-Visit [http://localhost:3000](http://localhost:3000) to see the application.
-
 # 📁 Project Structure
-
-```
 src/
 ├── app/                    # Next.js App Router pages
 │   ├── api/               # API routes
@@ -99,7 +82,6 @@ src/
 │   └── services/          # Business logic services
 ├── types/                 # TypeScript type definitions
 └── providers/             # React context providers
-```
 
 # Key Components
 
@@ -156,7 +138,6 @@ npm start
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
-- `npm run test` - Run tests
 
 # Code Style
 - ESLint for code linting
@@ -180,9 +161,9 @@ npm start
 
 # Acknowledgments
 
-- [Next.js](https://nextjs.org/) - React framework
-- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
-- [NextAuth.js](https://next-auth.js.org/) - Authentication
-- [MongoDB](https://www.mongodb.com/) - Database
--
+- Next.js - React framework
+- Tailwind CSS - CSS framework
+- NextAuth.js- Authentication
+- MongoDB- Database
+
 
