@@ -72,13 +72,13 @@ export default function DashboardPage() {
               </Link>
               <Link
                 href="/profile"
-                className="bg-gray-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium hover:bg-gray-700 transition-colors text-center"
+                className="bg-green-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium hover:bg-gray-700 transition-colors text-center"
               >
                 Edit Profile
               </Link>
               <Link
                 href="/posts"
-                className="bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium hover:bg-blue-700 transition-colors text-center sm:col-span-2 lg:col-span-1"
+                className="bg-green-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium hover:bg-blue-700 transition-colors text-center sm:col-span-2 lg:col-span-1"
               >
                 Browse Stories
               </Link>

@@ -28,35 +28,17 @@ A modern, full-stack blogging platform inspired by Medium, built with Next.js 16
 - MongoDB database (local or MongoDB Atlas)
 - Git
 
-# Installation & Setup
-
-# 1. Clone the Repository
-
-`bash
-git clone <your-repo-url>
-cd medium-platform
-`
-
-# 2. Install Dependencies
+# 1. Install Dependencies
 
 `bash
 npm install
 `
 
-# 3. Environment Configuration
+# 2. Environment Configuration
 
 Create a `.env.local` file in the root directory:
 
-# NextAuth Configuration
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your-super-secret-key-here
-
-
-# Development
-NODE_ENV=development
-`
-
-# 4. Database Setup
+# 3. Database Setup
 
 # Option A: Local MongoDB
 1. Install MongoDB locally
@@ -109,47 +91,17 @@ src/
    git add .
    git commit -m "Initial commit"
    git push origin main
-
-
-# Traditional Hosting
-`bash
-npm run build
-npm start
-`
 #Creating Your First Post
 1. Sign up for an account
 2. Navigate to Dashboard
 3. Click "Write a Story"
 4. Use the rich text editor to create content
 5. Add tags and publish
-
-### Following Users
-1. Browse posts or visit user profiles
-2. Click "Follow" button on user profiles
-3. View your following list in Profile → Following
-
-# Engaging with Content
-- Like posts by clicking the heart icon
-- Comment on posts (requires authentication)
-- Share posts via social media
-
 # Available Scripts
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
-
-# Code Style
-- ESLint for code linting
-- Prettierfor code formatting
-- TypeScript for type safety
-
-# Adding New Features
-1. Create feature branch: `git checkout -b feature/new-feature`
-2. Implement changes with tests
-3. Update documentation
-4. Submit pull request
-
 # Contributing
 
 1. Fork the repository
@@ -165,5 +117,11 @@ npm start
 - Tailwind CSS - CSS framework
 - NextAuth.js- Authentication
 - MongoDB- Database
+image of home page ![alt text](image.png)
+image of post page ![alt text](image-1.png)
+iamage of about page ![alt text](image-2.png)
+image of Dashboard page ![alt text](image-5.png)
+ image of profile page ![alt text](image-6.png)
+ ![alt text](image-7.png)
 
 
