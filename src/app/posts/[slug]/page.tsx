@@ -23,7 +23,7 @@ export default function PostPage({ params }: PostPageProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [commentSuccess, setCommentSuccess] = useState('')
 
-  const postId = post?._id || post?.id
+  const postId = post?.id
 
   const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -102,7 +102,7 @@ export default function PostPage({ params }: PostPageProps) {
                       </>
                     )}
                     <span>•</span>
-                    {postId && <SimpleLikeButton postId={postId} initialCount={post.likesCount || 0} />}
+                    {postId && <SimpleLikeButton postId={postId} initialCount={post._count?.likes || 0} />}
                   </div>
                 </header>
 
@@ -119,7 +119,7 @@ export default function PostPage({ params }: PostPageProps) {
                 <div className="text-center space-y-3 sm:space-y-4">
                   <h3 className="text-base sm:text-lg font-semibold">Like this story</h3>
                   {postId && (
-                    <SimpleLikeButton postId={postId} initialCount={post.likesCount || 0} />
+                    <SimpleLikeButton postId={postId} initialCount={post._count?.likes || 0} />
                   )}
                 </div>
               </div>

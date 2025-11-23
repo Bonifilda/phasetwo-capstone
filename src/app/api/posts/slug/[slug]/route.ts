@@ -12,6 +12,16 @@ export async function GET(_: Request, { params }: Params) {
     return NextResponse.json({ error: 'Post not found' }, { status: 404 })
   }
 
-  return NextResponse.json({ post })
+  // Transform _id to id for frontend compatibility
+  const transformedPost = {
+    ...post,
+    id: post._id.toString(),
+    author: post.author ? {
+      ...post.author,
+      id: post.author._id?.toString() || post.author.id
+    } : null
+  }
+
+  return NextResponse.json({ post: transformedPost })
 }
 
