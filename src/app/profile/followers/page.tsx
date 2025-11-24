@@ -26,13 +26,15 @@ export default function FollowersPage() {
       id: 'follower1',
       name: 'Alice Reader',
       username: 'alicereader',
-      bio: 'Loves reading great stories'
+      bio: 'Loves reading great stories',
+      avatar: undefined
     },
     {
       id: 'follower2',
       name: 'Bob Fan',
       username: 'bobfan',
-      bio: 'Your biggest supporter'
+      bio: 'Your biggest supporter',
+      avatar: undefined
     }
   ] : []
   
@@ -96,3 +98,4 @@ export default function FollowersPage() {
     </ProtectedRoute>
   )
 }
+ 

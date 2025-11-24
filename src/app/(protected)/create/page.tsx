@@ -81,8 +81,8 @@ export default function CreatePostPage() {
       <div className="py-10 bg-gray-50 min-h-screen">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold bg-black">Write a story</h1>
-            <p className="mt-2 text-black">
+            <h1 className="text-3xl font-bold text-gray-900">Write a story</h1>
+            <p className="mt-2 text-gray-600">
               Share your ideas with the world. You can save a draft or publish when you&apos;re
               ready.
             </p>
@@ -106,7 +106,7 @@ export default function CreatePostPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium bg-white text-black mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Tags (comma separated)
               </label>
               <input
@@ -114,7 +114,7 @@ export default function CreatePostPage() {
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
                 placeholder="e.g. javascript, webdev, life"
-                className="w-full rounded-md border  px-3 py-2 text-sm focus:outline-none focus:ring-2 bg-white text-black "
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white text-gray-900"
               />
             </div>
 

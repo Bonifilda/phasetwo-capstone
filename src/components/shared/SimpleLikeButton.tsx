@@ -53,8 +53,8 @@ export function SimpleLikeButton({ postId, initialCount = 0 }: SimpleLikeButtonP
       className="flex items-center gap-2 px-4 py-2 bg-green-100 hover:bg-green-200 rounded-full transition-colors disabled:opacity-50"
     >
       <span className="text-lg">👏</span>
-      <span className="font-medium">{count}</span>
-      {isLoading && <span className="text-sm">...</span>}
+      <span className="font-medium text-black">{count}</span>
+      {isLoading && <span className="text-sm text-black">...</span>}
     </button>
   )
 }

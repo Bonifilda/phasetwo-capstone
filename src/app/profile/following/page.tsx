@@ -8,8 +8,8 @@ import ProtectedRoute from "@/components/auth/protectedRoute"
 
 interface Following {
   id: string
-  name: string
-  username: string
+  name: string | null
+  username: string | null
   avatar?: string
   bio?: string
 }
@@ -27,13 +27,15 @@ export default function FollowingPage() {
       id: 'test1',
       name: 'John Writer',
       username: 'johnwriter',
-      bio: 'Professional content creator'
+      bio: 'Professional content creator',
+      avatar: undefined
     },
     {
       id: 'test2',
       name: 'Sarah Blogger',
       username: 'sarahblogger', 
-      bio: 'Tech enthusiast and blogger'
+      bio: 'Tech enthusiast and blogger',
+      avatar: undefined
     }
   ] : []
   
@@ -71,7 +73,7 @@ export default function FollowingPage() {
                       <div className="flex items-center space-x-4">
                         <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center">
                           {user.avatar ? (
-                            <img src={user.avatar} alt={user.name} className="w-12 h-12 rounded-full object-cover" />
+                            <img src={user.avatar} alt={user.name || 'User'} className="w-12 h-12 rounded-full object-cover" />
                           ) : (
                             <span className="text-lg font-bold text-gray-600">
                               {user.name?.charAt(0).toUpperCase() || 'U'}

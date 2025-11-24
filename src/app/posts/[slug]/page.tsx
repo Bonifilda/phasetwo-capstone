@@ -108,7 +108,7 @@ export default function PostPage({ params }: PostPageProps) {
 
                 {typeof post.content === 'string' && (
                   <div
-                    className="prose prose-sm sm:prose-base lg:prose-lg max-w-none"
+                    className="prose prose-sm sm:prose-base lg:prose-lg max-w-none text-black"
                     dangerouslySetInnerHTML={{ __html: post.content }}
                   />
                 )}
@@ -117,7 +117,7 @@ export default function PostPage({ params }: PostPageProps) {
               {/* Like Section */}
               <div className="mt-6 sm:mt-8 py-4 sm:py-6 border-y border-gray-200 bg-gray-50">
                 <div className="text-center space-y-3 sm:space-y-4">
-                  <h3 className="text-base sm:text-lg font-semibold">Like this story</h3>
+                  <h3 className="text-base sm:text-lg font-semibold text-black">Like this story</h3>
                   {postId && (
                     <SimpleLikeButton postId={postId} initialCount={post._count?.likes || 0} />
                   )}
@@ -125,7 +125,7 @@ export default function PostPage({ params }: PostPageProps) {
               </div>
 
               <section className="mt-6 sm:mt-8 pt-6 sm:pt-8">
-                <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Comments</h2>
+                <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-black">Comments</h2>
 
                 <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gray-50 rounded-lg">
                   {session?.user ? (
@@ -135,7 +135,7 @@ export default function PostPage({ params }: PostPageProps) {
                         onChange={(e) => setCommentText(e.target.value)}
                         placeholder="What are your thoughts?"
                         rows={4}
-                        className="w-full border border-gray-300 rounded-md px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-green-500"
+                        className="w-full border border-gray-300 rounded-md px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
                       />
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0">
                         <span className="text-xs sm:text-sm text-gray-600">
