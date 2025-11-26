@@ -48,7 +48,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.username = user.username ?? undefined
+        token.username = (user as any).username ?? undefined
         token.userId = user.id
         
         // Update lastLogin and loginCount on successful credentials sign-in
@@ -68,7 +68,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (session.user && token.userId) {
         session.user.id = token.userId as string
-        session.user.username = (token.username as string | undefined) ?? null
+        ;(session.user as any).username = (token.username as string | undefined) ?? null
         
         // Fetch fresh user data from database
         try {

@@ -37,7 +37,7 @@ export async function POST(
       content,
       author: {
         name: session.user.name,
-        username: session.user.username || session.user.name,
+        username: session.user.name,
       },
       createdAt: new Date().toISOString(),
       postId,

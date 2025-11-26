@@ -27,7 +27,7 @@ export async function GET(request: Request) {
   // Transform to return user data with id field
   const data = follows.map(follow => ({
     ...follow.follower,
-    id: follow.follower._id.toString()
+    id: (follow.follower as any)._id.toString()
   }))
 
   return NextResponse.json({

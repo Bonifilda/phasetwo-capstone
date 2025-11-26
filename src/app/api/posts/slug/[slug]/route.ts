@@ -18,7 +18,7 @@ export async function GET(_: Request, { params }: Params) {
     id: post._id.toString(),
     author: post.author ? {
       ...post.author,
-      id: post.author._id?.toString() || post.author.id
+      id: (post.author as any)._id?.toString() || (post.author as any).id
     } : null
   }
 
