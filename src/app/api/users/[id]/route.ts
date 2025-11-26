@@ -19,12 +19,13 @@ const updateUserSchema = z.object({
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     await connectToDatabase()
     
-    const user = await UserModel.findById(params.id).select('-password')
+    const user = await UserModel.findById(id).select('-password')
     
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
@@ -39,13 +40,14 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await requireSession()
     
     // Users can only update their own profile
-    if (session.user.id !== params.id) {
+    if (session.user.id !== id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 
@@ -55,7 +57,7 @@ export async function PUT(
     await connectToDatabase()
     
     const updatedUser = await UserModel.findByIdAndUpdate(
-      params.id,
+      id,
       payload,
       { new: true, runValidators: true }
     ).select('-password')

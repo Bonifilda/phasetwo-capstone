@@ -11,12 +11,13 @@ const updateSchema = z.object({
 })
 
 interface Params {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export async function GET(_: Request, { params }: Params) {
+  const { id } = await params
   await connectToDatabase()
-  const comment = await CommentModel.findById(params.id)
+  const comment = await CommentModel.findById(id)
     .populate('author', 'name username avatar')
     .lean()
 
@@ -29,13 +30,14 @@ export async function GET(_: Request, { params }: Params) {
 
 export async function PUT(request: Request, { params }: Params) {
   try {
+    const { id } = await params
     const session = await requireSession()
     const body = await request.json()
     const data = updateSchema.parse(body)
 
     await connectToDatabase()
     const comment = await CommentModel.findOneAndUpdate(
-      { _id: params.id, author: session.user.id },
+      { _id: id, author: session.user.id },
       { content: data.content },
       { new: true }
     ).populate('author', 'name username avatar')
@@ -56,11 +58,12 @@ export async function PUT(request: Request, { params }: Params) {
 
 export async function DELETE(_: Request, { params }: Params) {
   try {
+    const { id } = await params
     const session = await requireSession()
 
     await connectToDatabase()
     const comment = await CommentModel.findOneAndDelete({
-      _id: params.id,
+      _id: id,
       author: session.user.id,
     })
 

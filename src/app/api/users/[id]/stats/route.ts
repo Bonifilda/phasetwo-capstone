@@ -6,18 +6,19 @@ import { FollowModel } from '@/lib/models/Follow'
 import { LikeModel } from '@/lib/models/Like'
 
 interface Params {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export async function GET(_: Request, { params }: Params) {
+  const { id } = await params
   await connectToDatabase()
 
   const [postsCount, draftsCount, followersCount, followingCount, totalLikes] = await Promise.all([
-    PostModel.countDocuments({ author: params.id, published: true }),
-    PostModel.countDocuments({ author: params.id, published: false }),
-    FollowModel.countDocuments({ following: params.id }),
-    FollowModel.countDocuments({ follower: params.id }),
-    LikeModel.countDocuments({ post: { $in: await PostModel.find({ author: params.id }).distinct('_id') } }),
+    PostModel.countDocuments({ author: id, published: true }),
+    PostModel.countDocuments({ author: id, published: false }),
+    FollowModel.countDocuments({ following: id }),
+    FollowModel.countDocuments({ follower: id }),
+    LikeModel.countDocuments({ post: { $in: await PostModel.find({ author: id }).distinct('_id') } }),
   ])
 
   return NextResponse.json({

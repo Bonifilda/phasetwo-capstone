@@ -5,10 +5,11 @@ import { connectToDatabase } from '@/lib/db'
 import { FollowModel } from '@/lib/models/Follow'
 
 interface Params {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export async function GET(_: Request, { params }: Params) {
+  const { id } = await params
   const session = await getCurrentSession()
   if (!session?.user.id) {
     return NextResponse.json({ isFollowing: false })
@@ -17,7 +18,7 @@ export async function GET(_: Request, { params }: Params) {
   await connectToDatabase()
   const follow = await FollowModel.exists({
     follower: session.user.id,
-    following: params.id,
+    following: id,
   })
 
   return NextResponse.json({ isFollowing: Boolean(follow) })

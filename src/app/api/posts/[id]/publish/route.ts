@@ -9,16 +9,17 @@ const publishSchema = z.object({
 })
 
 interface Params {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export async function PATCH(request: Request, { params }: Params) {
   try {
+    const { id } = await params
     const session = await requireSession()
     const body = await request.json()
     const { published } = publishSchema.parse(body)
 
-    const post = await togglePublishPost(params.id, session.user.id, published)
+    const post = await togglePublishPost(id, session.user.id, published)
 
     if (!post) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 })

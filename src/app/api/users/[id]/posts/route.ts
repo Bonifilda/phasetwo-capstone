@@ -3,10 +3,11 @@ import { NextResponse } from 'next/server'
 import { listPosts } from '@/lib/services/postService'
 
 interface Params {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export async function GET(request: Request, { params }: Params) {
+  const { id } = await params
   const { searchParams } = new URL(request.url)
   const page = Number(searchParams.get('page') || 1)
   const limit = Number(searchParams.get('limit') || 10)
@@ -17,7 +18,7 @@ export async function GET(request: Request, { params }: Params) {
 
   const posts = await listPosts(
     {
-      authorId: params.id,
+      authorId: id,
       published,
     },
     page,

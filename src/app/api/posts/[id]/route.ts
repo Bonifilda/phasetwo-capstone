@@ -15,13 +15,14 @@ const updateSchema = z.object({
 })
 
 interface Params {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export async function GET(_: Request, { params }: Params) {
-  const post = await getPost(params.id)
+  const { id } = await params
+  const post = await getPost(id)
 
   if (!post) {
     return NextResponse.json({ error: 'Post not found' }, { status: 404 })
@@ -32,10 +33,11 @@ export async function GET(_: Request, { params }: Params) {
 
 export async function PUT(request: Request, { params }: Params) {
   try {
+    const { id } = await params
     const session = await requireSession()
     const data = await request.json()
     const payload = updateSchema.parse(data)
-    const post = await updatePost(params.id, payload, session.user.id)
+    const post = await updatePost(id, payload, session.user.id)
 
     if (!post) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 })
@@ -53,8 +55,9 @@ export async function PUT(request: Request, { params }: Params) {
 
 export async function DELETE(_: Request, { params }: Params) {
   try {
+    const { id } = await params
     const session = await requireSession()
-    await deletePost(params.id, session.user.id)
+    await deletePost(id, session.user.id)
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[POST_DELETE_ERROR]', error)

@@ -5,12 +5,13 @@ import { TagModel } from '@/lib/models/Tag'
 import { requireSession } from '@/lib/auth/session'
 
 interface Params {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export async function GET(_: Request, { params }: Params) {
+  const { id } = await params
   await connectToDatabase()
-  const tag = await TagModel.findById(params.id).lean()
+  const tag = await TagModel.findById(id).lean()
   if (!tag) {
     return NextResponse.json({ error: 'Tag not found' }, { status: 404 })
   }
@@ -20,9 +21,10 @@ export async function GET(_: Request, { params }: Params) {
 
 export async function DELETE(_: Request, { params }: Params) {
   try {
+    const { id } = await params
     await requireSession()
     await connectToDatabase()
-    await TagModel.findByIdAndDelete(params.id)
+    await TagModel.findByIdAndDelete(id)
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[TAG_DELETE_ERROR]', error)

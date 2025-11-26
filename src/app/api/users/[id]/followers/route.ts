@@ -4,10 +4,11 @@ import { connectToDatabase } from '@/lib/db'
 import { FollowModel } from '@/lib/models/Follow'
 
 interface Params {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export async function GET(request: Request, { params }: Params) {
+  const { id } = await params
   const { searchParams } = new URL(request.url)
   const page = Number(searchParams.get('page') || 1)
   const limit = Number(searchParams.get('limit') || 10)
@@ -17,13 +18,13 @@ export async function GET(request: Request, { params }: Params) {
   const skip = (page - 1) * limit
 
   const [data, total] = await Promise.all([
-    FollowModel.find({ following: params.id })
+    FollowModel.find({ following: id })
       .populate('follower', 'name username avatar headline')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .lean(),
-    FollowModel.countDocuments({ following: params.id }),
+    FollowModel.countDocuments({ following: id }),
   ])
 
   return NextResponse.json({
